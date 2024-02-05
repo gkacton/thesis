@@ -44,10 +44,79 @@ names(types) <- nodes$id
 
 net <- graph_from_data_frame(d = edges, vertices = nodes, directed = T)
 is_bipartite(net)
-plot(net)
 
-net %>% 
-  add_layout_(as_bipartite(types = types)) %>% 
-  plot(vertex.shape = "csquare",
-       vertex.size = 10,
-       vertex.label.cex = 0.5)
+L0 <- layout_as_bipartite(net)
+
+# net %>% 
+#   plot(layout=L0[,2:1],
+#        vertex.shape = "rectangle",
+#        vertex.size = 20,
+#        vertex.size2 = 10,
+#        vertex.label.cex = 0.5,
+#        edge.arrow.size = 0.5,
+#        edge.arrow.width = 0.2)
+
+
+# Make second network that weights arrows ---------------------------------
+
+edges_test <- edges
+
+for(i in 1:nrow(edges_test)) {
+  edges_test$path[i] <- paste(edges$from[i], edges$to[i], sep = ",")
+}
+
+# Add color values for nodes
+for(i in 1:nrow(nodes)){
+  if(nodes$id[i] == "DEACC" | nodes$id[i] == "CHRIS" | nodes$id[i] == "COSTUMES") {
+    nodes$color[i] <- "#A5A5A5"
+  } else if (nodes$id[i] %in% c(1:15, "shelf") ){
+    nodes$color[i] <- "#DBDBDB"
+  } else {
+    nodes$color[i] <- "#F6F6F6"
+  }
+}
+
+
+edges_weights <- edges_test %>% 
+  count(path) %>% 
+  separate(path, c("from", "to"), sep = ",") %>% 
+  mutate(weight = n) %>% 
+  select(-n)
+
+for(i in 1:nrow(edges_weights)){
+  if(edges_weights$weight[i] <= 2){
+    edges_weights$color[i] <- "#F7D3D3"
+  } else if(edges_weights$weight[i] <= 3){
+    edges_weights$color[i] <- "#E6A4A4"
+  } else if(edges_weights$weight[i] <= 4){
+    edges_weights$color[i] <- "#CB6F70"
+  } else if(edges_weights$weight[i] <= 6){
+    edges_weights$color[i] <- "#9D3D3D"
+  } else {
+    edges_weights$color[i] <- "#5F1415"
+  }
+}
+
+weighted <- graph_from_data_frame(d = edges_weights, vertices = nodes, directed = T)
+L1 <- layout_as_bipartite(weighted)
+
+E(weighted)$width <- E(weighted)$weight
+
+reorder_igraph_nodes(weighted, sortAttributes = c("id"))
+
+weighted %>% 
+  plot(layout=L1[,2:1],
+       vertex.shape = "rectangle",
+       vertex.size = 30,
+       vertex.size2 = 10,
+       vertex.label.color = "#000000",
+       vertex.color = nodes$color,
+       vertex.label.cex = 0.5,
+       vertex.label.family = "Helvetica",
+       vertex.label.font = 2,
+       edge.arrow.size = 0.3,
+       edge.arrow.width = 0.3,
+       edge.color = edges_weights$color,
+       edge.curved = 0.2)
+
+
