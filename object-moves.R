@@ -102,7 +102,9 @@ L1 <- layout_as_bipartite(weighted)
 
 E(weighted)$width <- E(weighted)$weight
 
-reorder_igraph_nodes(weighted, sortAttributes = c("id"))
+weighted_neworder <- permute(weighted, c(10, 5, 4, 13,14, 15, 11, 12, 7, 9, 2, 6, 16, 3, 8, 1, 21, 34, 
+                                         25, 32, 30, 37, 31, 33, 24, 38, 22, 36, 39, 23, 19, 26, 17, 
+                                         20, 29, 18, 28, 27, 35))
 
 weighted %>% 
   plot(layout=L1[,2:1],
