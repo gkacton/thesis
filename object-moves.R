@@ -138,8 +138,8 @@ weighted %>%
        vertex.label.family = "Helvetica",
        vertex.label.font = 2,
        vertex.label.color = nodes$text_color,
-       edge.arrow.size = 0.3,
-       edge.arrow.width = 0.3,
+       edge.arrow.size = 0.5,
+       edge.arrow.width = 1,
        edge.color = edges_weights$color,
        edge.curved = 0.2)
 
