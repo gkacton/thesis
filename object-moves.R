@@ -65,14 +65,35 @@ for(i in 1:nrow(edges_test)) {
   edges_test$path[i] <- paste(edges$from[i], edges$to[i], sep = ",")
 }
 
+nodes_to_weights <- edges %>% 
+  count(to)
+
+nodes <- left_join(nodes, nodes_to_weights, by = c("id" = "to"))
+
+
 # Add color values for nodes
 for(i in 1:nrow(nodes)){
   if(nodes$id[i] == "DEACC" | nodes$id[i] == "CHRIS" | nodes$id[i] == "COSTUMES") {
     nodes$color[i] <- "#A5A5A5"
+    nodes$text_color[i] <- "#000000"
   } else if (nodes$id[i] %in% c(1:15, "shelf") ){
     nodes$color[i] <- "#DBDBDB"
+    nodes$text_color[i] <- "#000000"
+  } else if(nodes$n[i] >= 10) {
+    nodes$color[i] <- "#002F70"
+    nodes$text_color[i] <- "#FFFFFF"
+  } else if(nodes$n[i] >= 7) {
+    nodes$color[i] <- "#265BAB"
+    nodes$text_color[i] <- "#FFFFFF"
+  } else if(nodes$n[i] >= 5){
+    nodes$color[i] <- "#6889D0"
+    nodes$text_color[i] <- "#000000"
+  } else if(nodes$n[i] >= 3){
+    nodes$color[i] <- "#A3B4E5"
+    nodes$text_color[i] <- "#000000"
   } else {
-    nodes$color[i] <- "#F6F6F6"
+    nodes$color[i] <- "#D3DBF4"
+    nodes$text_color[i] <- "#000000"
   }
 }
 
@@ -102,23 +123,49 @@ L1 <- layout_as_bipartite(weighted)
 
 E(weighted)$width <- E(weighted)$weight
 
-weighted_neworder <- permute(weighted, c(10, 5, 4, 13,14, 15, 11, 12, 7, 9, 2, 6, 16, 3, 8, 1, 21, 34, 
-                                         25, 32, 30, 37, 31, 33, 24, 38, 22, 36, 39, 23, 19, 26, 17, 
-                                         20, 29, 18, 28, 27, 35))
+# this code will put nodes in the correct order but it messes other things up
+# weighted_neworder <- permute(weighted, c(10, 5, 4, 13,14, 15, 11, 12, 7, 9, 2, 6, 16, 3, 8, 1, 21, 34, 
+#                                          25, 32, 30, 37, 31, 33, 24, 38, 22, 36, 39, 23, 19, 26, 17, 
+#                                          20, 29, 18, 28, 27, 35))
 
 weighted %>% 
   plot(layout=L1[,2:1],
        vertex.shape = "rectangle",
        vertex.size = 30,
        vertex.size2 = 10,
-       vertex.label.color = "#000000",
        vertex.color = nodes$color,
        vertex.label.cex = 0.5,
        vertex.label.family = "Helvetica",
        vertex.label.font = 2,
+       vertex.label.color = nodes$text_color,
        edge.arrow.size = 0.3,
        edge.arrow.width = 0.3,
        edge.color = edges_weights$color,
        edge.curved = 0.2)
 
 
+# Removing noisy lines ----------------------------------------------------
+
+edges_clean <- edges_weights %>% 
+  filter(weight >= 2)
+
+clean <- graph_from_data_frame(d = edges_clean, vertices = nodes, directed = T)
+L1 <- layout_as_bipartite(clean)
+
+E(clean)$width <- E(clean)$weight
+
+
+clean %>% 
+  plot(layout=L1[,2:1],
+       vertex.shape = "rectangle",
+       vertex.size = 30,
+       vertex.size2 = 10,
+       vertex.color = nodes$color,
+       vertex.label.cex = 0.5,
+       vertex.label.family = "Helvetica",
+       vertex.label.font = 2,
+       vertex.label.color = nodes$text_color,
+       edge.arrow.size = 0.3,
+       edge.arrow.width = 0.3,
+       edge.color = edges_weights$color,
+       edge.curved = 0.2)
