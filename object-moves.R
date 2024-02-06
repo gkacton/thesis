@@ -105,7 +105,7 @@ edges_weights <- edges_test %>%
   select(-n)
 
 for(i in 1:nrow(edges_weights)){
-  if(edges_weights$weight[i] <= 2){
+  if(edges_weights$weight[i] <= 1){
     edges_weights$color[i] <- "#F7D3D3"
   } else if(edges_weights$weight[i] <= 3){
     edges_weights$color[i] <- "#E6A4A4"
@@ -167,5 +167,5 @@ clean %>%
        vertex.label.color = nodes$text_color,
        edge.arrow.size = 0.3,
        edge.arrow.width = 0.3,
-       edge.color = edges_weights$color,
+       edge.color = edges_clean$color,
        edge.curved = 0.2)
