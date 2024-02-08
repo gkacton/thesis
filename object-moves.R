@@ -128,20 +128,20 @@ E(weighted)$width <- E(weighted)$weight
 #                                          25, 32, 30, 37, 31, 33, 24, 38, 22, 36, 39, 23, 19, 26, 17, 
 #                                          20, 29, 18, 28, 27, 35))
 
-weighted %>% 
-  plot(layout=L1[,2:1],
-       vertex.shape = "rectangle",
-       vertex.size = 30,
-       vertex.size2 = 10,
-       vertex.color = nodes$color,
-       vertex.label.cex = 0.5,
-       vertex.label.family = "Helvetica",
-       vertex.label.font = 2,
-       vertex.label.color = nodes$text_color,
-       edge.arrow.size = 0.5,
-       edge.arrow.width = 1,
-       edge.color = edges_weights$color,
-       edge.curved = 0.2)
+# weighted %>% 
+#   plot(layout=L1[,2:1],
+#        vertex.shape = "rectangle",
+#        vertex.size = 30,
+#        vertex.size2 = 10,
+#        vertex.color = nodes$color,
+#        vertex.label.cex = 0.5,
+#        vertex.label.family = "Helvetica",
+#        vertex.label.font = 2,
+#        vertex.label.color = nodes$text_color,
+#        edge.arrow.size = 0.5,
+#        edge.arrow.width = 1,
+#        edge.color = edges_weights$color,
+#        edge.curved = 0.2)
 
 
 # Removing noisy lines ----------------------------------------------------
@@ -158,14 +158,18 @@ E(clean)$width <- E(clean)$weight
 clean %>% 
   plot(layout=L1[,2:1],
        vertex.shape = "rectangle",
-       vertex.size = 30,
+       vertex.size = 35,
        vertex.size2 = 10,
        vertex.color = nodes$color,
-       vertex.label.cex = 0.5,
+       vertex.label.cex = 0.45,
        vertex.label.family = "Helvetica",
        vertex.label.font = 2,
        vertex.label.color = nodes$text_color,
        edge.arrow.size = 0.3,
        edge.arrow.width = 0.3,
        edge.color = edges_clean$color,
-       edge.curved = 0.2)
+       edge.curved = 0.2) %>% 
+    title(main = "Object Moves",
+          cex.main = 2, 
+          font.main = 2)
+
